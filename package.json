@@ -1,0 +1,25 @@
+{
+  "name": "reviews",
+  "version": "1.0.0",
+  "description": "Reviews API repo",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon server/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SDC-Haskell/reviews.git"
+  },
+  "author": "Austin Testut",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SDC-Haskell/reviews/issues"
+  },
+  "homepage": "https://github.com/SDC-Haskell/reviews#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "jest": "^26.6.3",
+    "path": "^0.12.7"
+  }
+}
