@@ -1,1 +1,9 @@
 node_modules
+
+config.js
+
+## csv files
+database/characteristic_reviews.csv
+database/characteristics.csv
+database/reviews_photos.csv
+database/reviews.csv
