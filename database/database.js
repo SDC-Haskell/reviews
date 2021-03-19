@@ -11,9 +11,37 @@ const sql = postgres({
 
 // GET to /reviews
 const getReviews = async (product_id) => {
-  let query = await sql`SELECT * FROM reviews WHERE product_id=${product_id}`;
-  return query;
+  let reviewData = await sql`
+  SELECT DISTINCT
+    reviews_photos.review_id,
+    reviews.rating,
+    reviews.summary,
+    reviews.recommend,
+    reviews.response,
+    reviews.body,
+    reviews.date,
+    reviews.reviewer_name,
+    reviews.helpfulness
+  FROM reviews_photos, reviews
+  WHERE (reviews.product_id=${product_id} AND reviews.id=reviews_photos.review_id)`;
+
+  let photos = await sql`
+  SELECT reviews_photos.id, reviews_photos.review_id, reviews_photos.url
+  FROM reviews_photos, reviews
+  WHERE (reviews.product_id=${product_id} AND reviews.id=reviews_photos.review_id)`;
+
+  for (let i = 0; i < reviewData.length; i++) {
+    reviewData[i].photos = [];
+    for (let j = 0; j < photos.length; j++) {
+      if (reviewData[i].review_id === photos[j].review_id) {
+        reviewData[i].photos.push({id: photos[j].id, url: photos[j].url});
+      }
+    }
+  }
+  return reviewData;
 };
+
+
 
 // GET to /reviews/meta
 const getReviewsMeta = async (product_id) => {
@@ -22,9 +50,9 @@ const getReviewsMeta = async (product_id) => {
 };
 
 // POST to /reviews
-const postReview = async (body) => { // does this need to be async?
+const postReview = (body) => { // does this need to be async?
   let currentDate = new Date();
-  return await sql`
+  return sql`
   WITH new_review AS (
     INSERT INTO reviews
     (product_id, rating, date, summary, body, recommend, reported, reviewer_name, reviewer_email, helpfulness)
@@ -41,8 +69,8 @@ const postReview = async (body) => { // does this need to be async?
     0)
     RETURNING id
   )
-  INSERT INTO reviews_photos (review_id, url) VALUES ((SELECT id FROM new_review), ${body.url})
-  `;
+  INSERT INTO reviews_photos (review_id, url)
+  VALUES ((SELECT id FROM new_review), ${body.url})`;
 };
 
 // PUT to /reviews/:review_id/helpful
