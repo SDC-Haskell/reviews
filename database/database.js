@@ -52,16 +52,25 @@ const getReviews = async (product_id, page = 1, count = 5) => {
 
 // GET to /reviews/meta
 const getReviewsMeta = async (product_id) => {
-  // let query = await sql`SELECT rating FROM reviews WHERE product_id=${product_id}`;
-  // return query;
 
-  let ones = await sql`SELECT COUNT(*) FROM reviews WHERE rating=1 AND product_id=${product_id}`
-  let twos = await sql`SELECT COUNT(*) FROM reviews WHERE rating=2 AND product_id=${product_id}`
-  let threes = await sql`SELECT COUNT(*) FROM reviews WHERE rating=3 AND product_id=${product_id}`
-  let fours = await sql`SELECT COUNT(*) FROM reviews WHERE rating=4 AND product_id=${product_id}`
-  let fives = await sql`SELECT COUNT(*) FROM reviews WHERE rating=5 AND product_id=${product_id}`
-  let falses = await sql`SELECT COUNT(*) FROM reviews WHERE recommend='false' AND product_id=${product_id}`
-  let trues = await sql`SELECT COUNT(*) FROM reviews WHERE recommend='true' AND product_id=${product_id}`
+  let ratingCounts = await sql`
+  WITH product_ratings AS (
+    SELECT rating, recommend
+    FROM reviews
+    WHERE product_id=${product_id}
+  )
+SELECT
+(SELECT COUNT(*) FROM product_ratings WHERE rating=1) as ones,
+(SELECT COUNT(*) FROM product_ratings WHERE rating=2) as twos,
+(SELECT COUNT(*) FROM product_ratings WHERE rating=3) as threes,
+(SELECT COUNT(*) FROM product_ratings WHERE rating=4) as fours,
+(SELECT COUNT(*) FROM product_ratings WHERE rating=5) as fives,
+(SELECT COUNT(*) FROM product_ratings WHERE recommend='true') as trues,
+(SELECT COUNT(*) FROM product_ratings WHERE recommend='false') as falses
+FROM product_ratings
+ORDER BY rating
+`
+
   let chars = await sql`
   WITH current AS (
     SELECT DISTINCT
@@ -86,15 +95,15 @@ const getReviewsMeta = async (product_id) => {
   let data = {
     product_id: product_id,
     ratings: {
-      1: ones[0].count,
-      2: twos[0].count,
-      3: threes[0].count,
-      4: fours[0].count,
-      5: fives[0].count
+      1: ratingCounts[0].ones,
+      2: ratingCounts[0].twos,
+      3: ratingCounts[0].threes,
+      4: ratingCounts[0].fours,
+      5: ratingCounts[0].fives
     },
     recommended: {
-      false: falses[0].count,
-      true: trues[0].count
+      false: ratingCounts[0].falses,
+      true: ratingCounts[0].trues
     },
     characteristics: charObj
   }
