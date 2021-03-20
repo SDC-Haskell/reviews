@@ -13,10 +13,15 @@ app.get('/', (req, res) => {
 });
 
 app.get('/reviews/', (req, res) => {
-  // can use new Date('MM/DD/YYYY').toISOString();
-  db.getReviews(req.query.product_id)
+  db.getReviews(req.query.product_id,  req.query.page,  req.query.count)
     .then((data) => {
-      res.status(200).send(data);
+      let dataObject = {
+        product: req.query.product_id,
+        page: req.query.page || 1,
+        count: req.query.count || 5,
+        results: data
+      }
+      res.status(200).send(dataObject);
     })
     .catch((err) => {
       res.status(402).send(err);
