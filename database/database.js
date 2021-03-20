@@ -10,7 +10,7 @@ const sql = postgres({
 });
 
 // GET to /reviews
-const getReviews = async (product_id, page = 0, count = 5) => {
+const getReviews = async (product_id, page = 1, count = 5) => {
   let reviewData = await sql`
   SELECT DISTINCT
     reviews_photos.review_id,
@@ -43,7 +43,7 @@ const getReviews = async (product_id, page = 0, count = 5) => {
     }
   }
 
-  // reviewData = reviewData.slice((count * page) + 1, (count * page) + count);
+  reviewData = reviewData.slice(count * (page - 1), (count * page));
 
   return reviewData;
 };

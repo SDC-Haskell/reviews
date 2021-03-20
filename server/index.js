@@ -17,7 +17,7 @@ app.get('/reviews/', (req, res) => {
     .then((data) => {
       let dataObject = {
         product: req.query.product_id,
-        page: req.query.page || 0,
+        page: req.query.page || 1,
         count: req.query.count || 5,
         results: data
       }
