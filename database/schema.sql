@@ -28,6 +28,7 @@ CREATE TABLE characteristic_reviews (
   value integer
 );
 
+
 CREATE TABLE characteristics (
   id SERIAL PRIMARY KEY NOT NULL,
   product_id integer NOT NULL,
@@ -123,6 +124,20 @@ DROP TABLE intermediate_characteristic_reviews;
 DROP TABLE intermediate_characteristics;
 DROP TABLE intermediate_reviews_photos;
 
+CREATE INDEX reviews_product_id_idx
+ON reviews (product_id);
+
+CREATE INDEX reviews_rating_idx
+ON reviews (rating);
+
+CREATE INDEX reviews_recommend_idx
+ON reviews (recommend);
+
+CREATE INDEX characteristics_product_id_idx
+ON characteristics (product_id);
+
+CREATE INDEX characteristic_reviews_characteristic_id_idx
+ON characteristic_reviews (characteristic_id);
 
 -- su postgres
 -- psql < database/schema.sql

@@ -69,6 +69,7 @@ SELECT
 (SELECT COUNT(*) FROM product_ratings WHERE recommend='false') as falses
 FROM product_ratings
 ORDER BY rating
+LIMIT 1
 `
 
   let chars = await sql`
@@ -87,6 +88,8 @@ ORDER BY rating
       FROM characteristic_reviews, characteristics
       WHERE current.characteristic_id=characteristic_reviews.characteristic_id)
   FROM current`
+  console.log(chars);
+
   let charObj = {};
   for (let i = 0; i < chars.length; i++) {
     charObj[chars[i].name] = {id: chars[i].id, value: chars[i].value}
