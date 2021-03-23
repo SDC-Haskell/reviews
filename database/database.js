@@ -72,27 +72,45 @@ ORDER BY rating
 LIMIT 1
 `
 
+  // let chars = await sql`
+  // WITH current AS (
+  //   SELECT DISTINCT
+  //     characteristics.name,
+  //     characteristic_reviews.characteristic_id
+  //   FROM characteristics, characteristic_reviews
+  //   WHERE characteristics.product_id = ${product_id}
+  //   AND characteristic_reviews.characteristic_id = characteristics.id
+  //   )
+  // SELECT
+  //   current.name,
+  //   current.characteristic_id AS id,
+  //   (SELECT AVG(value) AS value
+  //     FROM characteristic_reviews, characteristics
+  //     WHERE current.characteristic_id=characteristic_reviews.characteristic_id)
+  // FROM current`
   let chars = await sql`
-  WITH current AS (
-    SELECT DISTINCT
-      characteristics.name,
-      characteristic_reviews.characteristic_id
-    FROM characteristics, characteristic_reviews
-    WHERE characteristics.product_id = ${product_id}
-    AND characteristic_reviews.characteristic_id = characteristics.id
-    )
   SELECT
-    current.name,
-    current.characteristic_id AS id,
-    (SELECT AVG(value) AS value
-      FROM characteristic_reviews, characteristics
-      WHERE current.characteristic_id=characteristic_reviews.characteristic_id)
-  FROM current`
-  console.log(chars);
+    characteristics.name,
+    characteristic_reviews.characteristic_id AS id,
+    characteristic_reviews.value
+  FROM characteristics, characteristic_reviews
+  WHERE characteristics.product_id = ${product_id}
+  AND characteristic_reviews.characteristic_id = characteristics.id
+  `
 
   let charObj = {};
   for (let i = 0; i < chars.length; i++) {
-    charObj[chars[i].name] = {id: chars[i].id, value: chars[i].value}
+    if (charObj[chars[i].name]) {
+      charObj[chars[i].name].valueTotal += chars[i].value;
+      charObj[chars[i].name].count += 1;
+      charObj[chars[i].name].value = charObj[chars[i].name].valueTotal / charObj[chars[i].name].count;
+    } else {
+      charObj[chars[i].name] = {id: chars[i].id, value: chars[i].value, valueTotal: chars[i].value, count: 1}
+    }
+  }
+  for (var key in charObj) {
+    delete charObj[key].valueTotal;
+    delete charObj[key].count;
   }
 
   let data = {
