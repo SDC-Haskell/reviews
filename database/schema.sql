@@ -139,6 +139,9 @@ ON characteristics (product_id);
 CREATE INDEX characteristic_reviews_characteristic_id_idx
 ON characteristic_reviews (characteristic_id);
 
+CREATE INDEX reviews_photos_review_id_idx
+ON reviews_photos (review_id);
+
 -- su postgres
 -- psql < database/schema.sql
 
