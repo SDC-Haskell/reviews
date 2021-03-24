@@ -22,23 +22,25 @@ const getReviews = async (product_id, page = 1, count = 5) => {
     reviews.body,
     reviews.date,
     reviews.reviewer_name,
-    reviews.helpfulness
+    reviews.helpfulness,
+    reviews_photos.id,
+    reviews_photos.url
   FROM reviews_photos, reviews
   WHERE (reviews.product_id=${product_id} AND reviews.id=reviews_photos.review_id)`;
 
-  let photos = await sql`
-  SELECT reviews_photos.id, reviews_photos.review_id, reviews_photos.url
-  FROM reviews_photos, reviews
-  WHERE (reviews.product_id=${product_id} AND reviews.id=reviews_photos.review_id)`;
+  // let photos = await sql`
+  // SELECT reviews_photos.id, reviews_photos.review_id, reviews_photos.url
+  // FROM reviews_photos, reviews
+  // WHERE (reviews.product_id=${product_id} AND reviews.id=reviews_photos.review_id)`;
 
   for (let i = 0; i < reviewData.length; i++) {
     reviewData[i].photos = [];
-    for (let j = 0; j < photos.length; j++) {
-      if (reviewData[i].review_id === photos[j].review_id) {
-        if (photos[j].url === ''){
+    for (let j = 0; j < reviewData.photos.length; j++) {
+      if (reviewData[i].review_id === reviewData.photos[j].review_id) {
+        if (reviewData.photos[j].url === ''){
           break;
         } else {
-          reviewData[i].photos.push({id: photos[j].id, url: photos[j].url});
+          reviewData[i].photos.push({id: reviewData.photos[j].id, url: reviewData.photos[j].url});
         }
       }
     }

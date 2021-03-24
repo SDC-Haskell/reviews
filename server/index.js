@@ -12,6 +12,10 @@ app.get('/', (req, res) => {
   res.status(200).send('root');
 });
 
+app.get('/loaderio-0ed575774643d7808b50b35c1fa62f16/', (req, res) => {
+  req.status(200).send('loaderio-0ed575774643d7808b50b35c1fa62f16');
+})
+
 app.get('/reviews/', (req, res) => {
   db.getReviews(req.query.product_id,  req.query.page,  req.query.count)
     .then((data) => {
