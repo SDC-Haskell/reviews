@@ -1,13 +1,14 @@
 const postgres = require('postgres');
-const { dbUser, dbPass } = require('../config');
+const { dbUser, dbPass, dbIP } = require('../config');
 
 const sql = postgres({
-  host: 'localhost', // IP
+  host: dbIP, // IP
   port: 5432, // whatever port Postgres uses (this is default)
   database: 'reviewdb',
   username: dbUser,
   password: dbPass
 });
+
 
 // GET to /reviews
 const getReviews = async (product_id, page = 1, count = 5) => {
