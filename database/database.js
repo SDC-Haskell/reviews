@@ -73,22 +73,6 @@ ORDER BY rating
 LIMIT 1
 `
 
-  // let chars = await sql`
-  // WITH current AS (
-  //   SELECT DISTINCT
-  //     characteristics.name,
-  //     characteristic_reviews.characteristic_id
-  //   FROM characteristics, characteristic_reviews
-  //   WHERE characteristics.product_id = ${product_id}
-  //   AND characteristic_reviews.characteristic_id = characteristics.id
-  //   )
-  // SELECT
-  //   current.name,
-  //   current.characteristic_id AS id,
-  //   (SELECT AVG(value) AS value
-  //     FROM characteristic_reviews, characteristics
-  //     WHERE current.characteristic_id=characteristic_reviews.characteristic_id)
-  // FROM current`
   let chars = await sql`
   SELECT
     characteristics.name,

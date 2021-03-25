@@ -4,6 +4,7 @@ const app = express();
 const port = 3000;
 
 const db = require('../database/database');
+const { loaderHash } = require('../config.js');
 
 // app.use('/static', express.static(path.join(__dirname, 'public')))
 app.use(express.json());
@@ -12,12 +13,12 @@ app.get('/', (req, res) => {
   res.status(200).send('root');
 });
 
-app.get('/loaderio-0ed575774643d7808b50b35c1fa62f16/', (req, res) => {
-  res.status(200).send('loaderio-0ed575774643d7808b50b35c1fa62f16');
-})
+app.get(`/${loaderHash}/`, (req, res) => {
+  res.status(200).send(`${loaderHash}`);
+});
 
 app.get('/reviews/', (req, res) => {
-  db.getReviews(req.query.product_id,  req.query.page,  req.query.count)
+  db.getReviews(req.query.product_id, req.query.page, req.query.count)
     .then((data) => {
       let dataObject = {
         product: req.query.product_id,
